@@ -27,12 +27,12 @@ const Modal = ({imgModal, toggleModal}) => {
     }
   };
 
-    return createPortal(
+    return (
       <div className={css.Overlay} onClick={backdropClick}>
         <div className={css.Modal}>
           <img src={imgModal.largeImageURL} alt={imgModal.tags} />
         </div>
-      </div>, modalRoot);
+      </div>);
 };
 
 
