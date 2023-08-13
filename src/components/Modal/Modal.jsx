@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import css from '../styles.module.css';
 import { useEffect } from 'react';
 
+
 // const modalRoot = document.querySelector('#modal-root');
 
 const Modal = ({imgModal, toggleModal}) => {
