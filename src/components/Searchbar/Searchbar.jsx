@@ -1,45 +1,41 @@
-import { Component } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 import css from '../styles.module.css';
+import { useState } from 'react';
 
-class Searchbar extends Component {
-  state = {
-    textSearchForm: '',
+const Searchbar = ({onSubmit}) => {
+  const [textSearchForm, setTextSearchForm] = useState("")
+
+  const handleTextSearchChange = e => {
+    setTextSearchForm(e.currentTarget.value.toLowerCase())
   };
 
-  handleTextSearchChange = e => {
-    this.setState({ textSearchForm: e.currentTarget.value.toLowerCase() });
-  };
-
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    if (this.state.textSearchForm.trim() === ""){
+    if (textSearchForm.trim() === ""){
       return alert("Enter your request")
     }
-    this.props.onSubmit(this.state.textSearchForm);
-    this.setState({ textSearchForm: '' });
+    onSubmit(textSearchForm);
+     setTextSearchForm('')
   };
 
-  render() {
-    return (
-      <header className={css.Searchbar}>
-        <form className={css.SearchForm} onSubmit={this.handleSubmit}>
-          <button type="submit" className={css.SearchForm_button}>
-            <span><FaSearch value={{className:"SearchForm_button"}}/></span> 
-          </button>
+  return (
+    <header className={css.Searchbar}>
+      <form className={css.SearchForm} onSubmit={handleSubmit}>
+        <button type="submit" className={css.SearchForm_button}>
+          <span><FaSearch value={{className:"SearchForm_button"}}/></span> 
+        </button>
 
-          <input
-            className={css.SearchForm_input}
-            type="text"
-            placeholder="Search images and photos"
-            onChange={this.handleTextSearchChange}
-            value={this.state.textSearchForm}
-          />
-        </form>
-      </header>
-    );
-  }
+        <input
+          className={css.SearchForm_input}
+          type="text"
+          placeholder="Search images and photos"
+          onChange={handleTextSearchChange}
+          value={textSearchForm}
+        />
+      </form>
+    </header>
+  );
 }
 
 export default Searchbar;

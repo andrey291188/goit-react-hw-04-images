@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
@@ -7,88 +6,81 @@ import Modal from './Modal/Modal';
 import request from '../service/Api/api';
 import PropTypes from 'prop-types';
 import css from './styles.module.css';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
-class App extends Component {
-  state = {
-    textSearch: '',
-    arrayDataImages: [],
-    dataImageIndex: null,
-    page: 1,
-    loader: false,
-    showModal: false,
-    btnVisible: null,
-  };
+const App = () => {
+  const [textSearch, setTextSearch] = useState("");
+  const [arrayDataImages, setArrayDataImages] = useState([]);
+  const [dataImageIndex, setDataImageIndex] = useState(null);
+  const [page, setPage] = useState(1);
+  const [loader, setLoader] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [btnVisible, setBtnVisible] = useState(null);
 
-  componentDidUpdate(_, prevState) {
-    const { page: nextPage, textSearch: nextTextRequest } = this.state;
-    const { textSearch: prevTextRequest, page: prevPage } = prevState;
-    if (prevTextRequest !== nextTextRequest || prevPage !== nextPage) {
-      this.getRequest(nextTextRequest, nextPage);
+  useEffect(() => {
+    if (textSearch === "") {
+      return
     }
-  }
+    getRequest(textSearch, page);
 
-  getRequest = async (queryText, page) => {
+  }, [textSearch, page])
+
+  const getRequest = async (queryText, page) => {
     try {
-      this.setState({ loader: true });
+      setLoader(true);
       const response = await request(queryText, page);
       if (!response.hits.length) {
         return alert(`Request with this name ${queryText} not found`);
       }
-      this.setState(prevState => ({
-        arrayDataImages: [...prevState.arrayDataImages, ...response.hits],
-        btnVisible: response.totalHits,
-      }));
+        setArrayDataImages((prevArray) => [...prevArray, ...response.hits]);
+        setBtnVisible(response.totalHits);
     } catch (error) {
       alert('Sorry something went wrong, try again');
     } finally {
-      this.setState({ loader: false });
+      setLoader(false);
     }
   };
 
-  handleSearchSubmit = text => {
-    this.setState({ textSearch: text, page: 1, arrayDataImages: [] });
+  const handleSearchSubmit = text => {
+   setTextSearch(text);
+   setPage(1); 
+   setArrayDataImages([]);
   };
 
-  handleIncrement = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
+  const handleIncrement = () => {
+   setPage((prevPage) => prevPage + 1)
+    
   };
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
+  const toggleModal = () => {
+   setShowModal(!showModal)
   };
 
-  handleDataIndex = index => {
-    this.setState({ dataImageIndex: index });
-    this.toggleModal();
+  const handleDataIndex = index => {
+    setDataImageIndex(index);
+    toggleModal();
   };
-
-  render() {
-    const { arrayDataImages, loader, showModal, dataImageIndex, btnVisible } =
-      this.state;
+ 
     const totalPage = btnVisible / arrayDataImages.length;
     return (
       <div className={css.App}>
-        <Searchbar onSubmit={this.handleSearchSubmit} />
+        <Searchbar onSubmit={handleSearchSubmit} />
         {arrayDataImages && (
-          <ImageGallery data={arrayDataImages} onClick={this.handleDataIndex} />
+          <ImageGallery data={arrayDataImages} onClick={handleDataIndex} />
         )}
         {totalPage > 1 && !loader && arrayDataImages.length > 0 && (
-          <Button onClick={this.handleIncrement} />
+          <Button onClick={handleIncrement} />
         )}
         {loader && <Loader />}
         {showModal && (
           <Modal
             imgModal={arrayDataImages[dataImageIndex]}
-            toggleModal={this.toggleModal}
+            toggleModal={toggleModal}
           />
         )}
       </div>
     );
-  }
 }
 
 export default App;
