@@ -84,7 +84,3 @@ const App = () => {
 }
 
 export default App;
-
-App.propTypes = {
-  text: PropTypes.string,
-};
