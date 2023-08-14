@@ -4,7 +4,6 @@ import { Loader } from './Loader/Loader';
 import { Button } from './Button/Button';
 import Modal from './Modal/Modal';
 import request from '../service/Api/api';
-import PropTypes from 'prop-types';
 import css from './styles.module.css';
 import { useState } from 'react';
 import { useEffect } from 'react';
