@@ -8,18 +8,18 @@ const modalRoot = document.querySelector('#modal-root')
 const Modal = ({imgModal, toggleModal}) => {
 
   useEffect(()=>{
+    const handleKeyDown = e => {
+      if (e.code === 'Escape') {
+        toggleModal();
+      }
+    };
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     }
-  });
+  }, [toggleModal]);
 
-  const handleKeyDown = e => {
-    if (e.code === 'Escape') {
-      toggleModal();
-    }
-  };
 
   const backdropClick = e => {
     if (e.currentTarget === e.target) {
